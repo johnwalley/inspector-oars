@@ -39,12 +39,20 @@ const Item = posed.li({
   pressable: true,
   init: { scale: 1 },
   press: { scale: 1.2 },
+  preEnter: {
+    y: 40,
+    opacity: 0,
+  },
   enter: {
     y: 0,
     opacity: 1,
+    transition: {
+      y: { type: 'spring', stiffness: 1000, damping: 15 },
+      default: { duration: 100 },
+    },
   },
   exit: {
-    y: 40,
+    y: -40,
     opacity: 0,
   },
 });
@@ -146,7 +154,7 @@ class App extends Component {
             )}
           </PoseGroup>
           <ul>
-            <PoseGroup>
+            <PoseGroup preEnterPose="preEnter">
               {items.map(id => (
                 <Item key={id} onClick={() => this.handleClick(id)}>
                   <PosedBlade club={id} size="100%" />
