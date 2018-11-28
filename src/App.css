@@ -1,0 +1,45 @@
+.App {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  height: 100%
+}
+
+header {}
+
+main {
+  min-height: 200px;
+  flex: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+footer {}
+
+ul {
+  list-style: none;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  flex-direction: row;
+  display: flex;
+  max-width: 90vw;
+  padding: 0px;
+}
+
+li {
+  display: block;
+  width: 18vw;
+  height: 100%;
+  margin: 10px;
+}
+
+@media (orientation: portrait) {
+  li {
+    width: 38vw;
+    height: 100%;
+    margin: 10px;
+  }
+}
