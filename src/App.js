@@ -33,19 +33,18 @@ const Counter = styled.p`
   margin: 0;
 `;
 
-const PosedBlade = posed(Blade)({
-  pressable: true,
-  init: { scale: 1, boxShadow: '0px 0px 0px rgba(0,0,0,0)' },
-  press: { scale: 1, boxShadow: '0px 5px 10px rgba(0,0,0,0.2)' },
-});
+const PosedBlade = posed(Blade)({});
 
 const Item = posed.li({
+  pressable: true,
+  init: { scale: 1 },
+  press: { scale: 1.2 },
   enter: {
-    x: 0,
+    y: 0,
     opacity: 1,
   },
   exit: {
-    x: 100,
+    y: 40,
     opacity: 0,
   },
 });

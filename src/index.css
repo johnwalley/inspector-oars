@@ -21,9 +21,9 @@ body {
 
 @keyframes bg-move {
   0%, 100% {
-    background-color: hsl(330deg, 80%, 80%);
+    background-color: hsl(210, 40%, 60%);
   }
   50% {
-    background-color: hsl(200deg, 80%, 80%);
+    background-color: hsl(300deg, 40%, 60%);
   }
 }
