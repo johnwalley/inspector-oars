@@ -167,20 +167,31 @@ const names = {
   wolfson: 'Wolfson College',
 };
 
-const numQuestions = 20;
+const numQuestions = 10;
 
-const initialClubs = shuffle(items).slice(0, 4);
+const deal = (arr, selected, n) => {
+  const forbidden = [selected];
+
+  while (forbidden.length < n) {
+    const i = Math.floor(Math.random() * arr.length);
+
+    if (!forbidden.includes(arr[i])) {
+      forbidden.push(arr[i]);
+    }
+  }
+
+  return forbidden;
+};
 
 class App extends Component {
   intervalId = 0;
 
   state = {
     stage: -1,
-    counter: 1,
+    counter: 0,
     correct: 0,
     result: null,
-    question: names[initialClubs[0]],
-    items: shuffle(initialClubs),
+    items: shuffle(items).slice(0, 4),
   };
 
   componentDidMount() {
@@ -193,40 +204,51 @@ class App extends Component {
 
   handleStart() {
     clearInterval(this.intervalId);
+    const questions = shuffle(items).slice(0, numQuestions);
+
     this.setState({
       stage: 0,
-      question: names[initialClubs[0]],
-      items: shuffle(initialClubs),
+      questions: questions,
+      items: shuffle(deal(items, questions[0], 4)),
     });
   }
 
   handleRestart() {
+    const questions = shuffle(items).slice(0, numQuestions);
+
     this.intervalId = setInterval(() => {
       this.setState({
         items: shuffle(items).slice(0, 4),
       });
     }, 2000);
 
-    this.setState({ stage: -1, counter: 1, correct: 0 });
+    this.setState({
+      stage: -1,
+      counter: 0,
+      correct: 0,
+      questions: questions,
+      items: shuffle(items).slice(0, 4),
+    });
   }
 
   handleClick(club) {
     let correct = this.state.correct;
 
-    if (names[club] === this.state.question) {
+    if (club === this.state.questions[this.state.counter]) {
       correct += 1;
       this.setState({ result: 'correct' });
     } else {
       this.setState({ result: 'wrong' });
     }
 
-    const selectedClubs = shuffle(items).slice(0, 4);
+    const selectedClubs = shuffle(
+      deal(items, this.state.questions[this.state.counter + 1], 4)
+    );
 
     setTimeout(
       () =>
         this.setState({
-          stage: this.state.counter === numQuestions ? 1 : 0,
-          question: names[shuffle(selectedClubs.slice())[0]],
+          stage: this.state.counter + 1 === numQuestions ? 1 : 0,
           items: selectedClubs,
           correct: correct,
           counter: this.state.counter + 1,
@@ -271,7 +293,9 @@ class App extends Component {
       case 0:
         content = (
           <React.Fragment>
-            <Question content={this.state.question} />
+            <Question
+              content={names[this.state.questions[this.state.counter]]}
+            />
             <PoseGroup>
               {result && (
                 <PosedResult key="result" className="result" result={result} />
@@ -287,7 +311,7 @@ class App extends Component {
               </PoseGroup>
             </ul>
             <Counter>
-              {this.state.counter} / {numQuestions}
+              {this.state.counter + 1} / {numQuestions}
             </Counter>
           </React.Fragment>
         );
@@ -304,6 +328,8 @@ class App extends Component {
           </div>
         );
         break;
+      default:
+        content = null;
     }
 
     return (
