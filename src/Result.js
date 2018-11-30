@@ -13,9 +13,9 @@ const Icon = styled.div`
 const Result = React.forwardRef(({ result }, ref) => (
   <Icon ref={ref}>
     {result === 'correct' ? (
-      <FaCheckCircle size="200" color="rgba(40,255,40,0.8)" />
+      <FaCheckCircle size="200" color="rgba(40,255,40,1)" />
     ) : (
-      <FaTimesCircle size="200" color="rgba(255,0,0,0.8)" />
+      <FaTimesCircle size="200" color="rgba(255,0,0,1)" />
     )}
   </Icon>
 ));

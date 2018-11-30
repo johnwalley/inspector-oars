@@ -55,7 +55,7 @@ const Footer = styled.h2`
 `;
 
 const Counter = styled.p`
-  font-size: calc(30px + 2vw);
+  font-size: calc(20px + 1.5vw);
   font-weight: bold;
   margin: 0;
 `;
