@@ -2,10 +2,37 @@ import React, { Component } from 'react';
 import posed, { PoseGroup } from 'react-pose';
 import styled from 'styled-components';
 import shuffle from './shuffle';
-import Blade from './Blade';
+import { Blade } from 'react-rowing-blades';
 import Question from './Question';
 import Result from './Result';
 import './App.css';
+
+const Button = styled.button`
+  font-size: 32px;
+  border-radius: 0.25rem;
+  padding: 10px 18px;
+  background-color: #28a745;
+  border-color: #28a745;
+  color: white;
+  cursor: pointer;
+`;
+
+const PosedButton = posed(Button)({
+  hoverable: true,
+  pressable: true,
+  init: {
+    scale: 1,
+    boxShadow: '0px 0px 0px rgba(0,0,0,0)',
+  },
+  hover: {
+    scale: 1.1,
+    boxShadow: '0px 5px 10px rgba(0,0,0,0.2)',
+  },
+  press: {
+    scale: 0.9,
+    boxShadow: '0px 2px 5px rgba(0,0,0,0.1)',
+  },
+});
 
 const Title = styled.h1`
   font-family: 'Pacifico', cursive;
@@ -75,43 +102,113 @@ const PosedResult = posed(Result)({
 });
 
 const items = [
-  'city',
-  'cantabs',
-  'nines',
-  'champs',
-  'neots',
-  'catz',
-  'emmanuel',
-  'darwin',
   'caius',
-  'churchill',
   'christs',
+  'churchill',
+  'clare',
+  'clarehall',
+  'corpus',
+  'darwin',
+  'downing',
+  'emmanuel',
+  'fat',
+  'fitz',
+  'girton',
+  'homerton',
+  'hh',
+  'jesus',
+  'kings',
+  'lmbc',
+  'magdalene',
+  'murray',
+  'newnham',
+  'pembroke',
+  'peterhouse',
+  'queens',
+  'robinson',
+  'selwyn',
+  'sidney',
+  'catz',
+  'edmunds',
+  'tithall',
+  'wolfson',
 ];
 
 const names = {
-  city: 'City of Cambridge',
-  cantabs: 'Cantabrigian',
-  nines: "Cambridge '99",
-  champs: 'Champion of the Thames',
-  neots: 'St Neots',
-  catz: 'St Catherines College',
-  emmanuel: 'Emmanuel College',
-  darwin: 'Darwin College',
-  caius: 'Caius College',
-  churchill: 'Churchill College',
+  caius: 'Caius',
   christs: "Christ's College",
+  churchill: 'Churchill College',
+  clare: 'Clare',
+  clarehall: 'Clare Hall',
+  corpus: 'Corpus Christi College',
+  darwin: 'Darwin College',
+  downing: 'Downing College',
+  emmanuel: 'Emmanuel',
+  fat: 'First and Third Trinity',
+  fitz: 'Fitzwilliam College',
+  girton: 'Girton College',
+  homerton: 'Homerton College',
+  hh: 'Hughes Hall',
+  jesus: 'Jesus College',
+  kings: "King's College",
+  lmbc: 'Lady Margaret',
+  magdalene: 'Magdalene',
+  murray: 'Murray Edwards College',
+  newnham: 'Newnham College',
+  pembroke: 'Pembroke College',
+  peterhouse: 'Peterhouse',
+  queens: "Queens' College",
+  robinson: 'Robinson College',
+  selwyn: 'Selwyn College',
+  sidney: 'Sidney Sussex',
+  catz: "St. Catharine's College",
+  edmunds: "St. Edmund's College",
+  tithall: 'Trinity Hall',
+  wolfson: 'Wolfson College',
 };
+
+const numQuestions = 1;
 
 const initialClubs = shuffle(items).slice(0, 4);
 
 class App extends Component {
+  intervalId = 0;
+
   state = {
-    counter: 0,
+    stage: -1,
+    counter: 1,
     correct: 0,
     result: null,
     question: names[initialClubs[0]],
     items: shuffle(initialClubs),
   };
+
+  componentDidMount() {
+    this.intervalId = setInterval(() => {
+      this.setState({
+        items: shuffle(items).slice(0, 4),
+      });
+    }, 2000);
+  }
+
+  handleStart() {
+    clearInterval(this.intervalId);
+    this.setState({
+      stage: 0,
+      question: names[initialClubs[0]],
+      items: shuffle(initialClubs),
+    });
+  }
+
+  handleRestart() {
+    this.intervalId = setInterval(() => {
+      this.setState({
+        items: shuffle(items).slice(0, 4),
+      });
+    }, 2000);
+
+    this.setState({ stage: -1, counter: 1, correct: 0 });
+  }
 
   handleClick(club) {
     let correct = this.state.correct;
@@ -128,6 +225,7 @@ class App extends Component {
     setTimeout(
       () =>
         this.setState({
+          stage: this.state.counter === numQuestions ? 1 : 0,
           question: names[shuffle(selectedClubs.slice())[0]],
           items: selectedClubs,
           correct: correct,
@@ -139,33 +237,75 @@ class App extends Component {
   }
 
   render() {
-    const { items, result } = this.state;
+    const { stage, items, result } = this.state;
+
+    let content = null;
+
+    switch (stage) {
+      case -1:
+        content = (
+          <div>
+            <ul>
+              <PoseGroup preEnterPose="preEnter">
+                {items.map(id => (
+                  <Item key={id}>
+                    <PosedBlade club={id} className="blade" />
+                  </Item>
+                ))}
+              </PoseGroup>
+            </ul>
+            <p style={{ padding: '28px 10px' }}>
+              Do you think you can identify all these rowing club blades? Take
+              the Inspector Oars quiz to find out!
+            </p>
+            <PosedButton onClick={() => this.handleStart()}>Start</PosedButton>
+          </div>
+        );
+        break;
+      case 0:
+        content = (
+          <React.Fragment>
+            <Question content={this.state.question} />
+            <PoseGroup>
+              {result && (
+                <PosedResult key="result" className="result" result={result} />
+              )}
+            </PoseGroup>
+            <ul>
+              <PoseGroup preEnterPose="preEnter">
+                {items.map(id => (
+                  <Item key={id} onClick={() => this.handleClick(id)}>
+                    <PosedBlade club={id} className="blade" />
+                  </Item>
+                ))}
+              </PoseGroup>
+            </ul>
+            <Counter>
+              {this.state.counter} / {numQuestions}
+            </Counter>
+          </React.Fragment>
+        );
+        break;
+      case 1:
+        content = (
+          <div>
+            <p>
+              Your score: {this.state.correct}/{numQuestions}
+            </p>
+            <PosedButton onClick={() => this.handleRestart()}>
+              Play again
+            </PosedButton>
+          </div>
+        );
+        break;
+    }
 
     return (
       <div className="App">
         <header>
           <Title>Inspector Oars</Title>
         </header>
-        <main>
-          <Question content={this.state.question} />
-          <PoseGroup>
-            {result && (
-              <PosedResult key="result" className="result" result={result} />
-            )}
-          </PoseGroup>
-          <ul>
-            <PoseGroup preEnterPose="preEnter">
-              {items.map(id => (
-                <Item key={id} onClick={() => this.handleClick(id)}>
-                  <PosedBlade club={id} size="100%" />
-                </Item>
-              ))}
-            </PoseGroup>
-          </ul>
-          <Counter>
-            {this.state.correct} / {this.state.counter}
-          </Counter>
-        </main>
+        <main>{content}</main>
         <footer>
           <Footer>© 2018 John Walley</Footer>
         </footer>

@@ -44,3 +44,7 @@ li {
     margin: 10px;
   }
 }
+
+.blade {
+  cursor: pointer;
+}
