@@ -112,7 +112,6 @@ const items = [
   'downing',
   'emmanuel',
   'fat',
-  'fitz',
   'girton',
   'homerton',
   'hh',
