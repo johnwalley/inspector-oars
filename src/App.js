@@ -8,7 +8,7 @@ import Result from './Result';
 import './App.css';
 
 const Button = styled.button`
-  font-size: 32px;
+  font-size: calc(14px + 1.5vmin);
   border-radius: 0.25rem;
   padding: 10px 18px;
   background-color: #28a745;
@@ -254,7 +254,13 @@ class App extends Component {
                 ))}
               </PoseGroup>
             </ul>
-            <p style={{ padding: '28px 10px' }}>
+            <p
+              style={{
+                padding: '0px 28px',
+                margin: '4px 0px 12px 0px',
+                fontSize: 'calc(14px + 1.5vw)',
+              }}
+            >
               Do you think you can identify all these rowing club blades? Take
               the Inspector Oars quiz to find out!
             </p>
