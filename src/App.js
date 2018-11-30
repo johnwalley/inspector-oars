@@ -167,7 +167,7 @@ const names = {
   wolfson: 'Wolfson College',
 };
 
-const numQuestions = 1;
+const numQuestions = 20;
 
 const initialClubs = shuffle(items).slice(0, 4);
 
