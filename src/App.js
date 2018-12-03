@@ -5,6 +5,7 @@ import shuffle from './shuffle';
 import { Blade } from 'react-rowing-blades';
 import Question from './Question';
 import Result from './Result';
+import Rating from './Rating';
 import './App.css';
 
 const Button = styled.button`
@@ -43,13 +44,6 @@ const Title = styled.h1`
   justify-content: center;
   font-size: calc(20px + 2vw);
   color: white;
-  margin: 0;
-  padding: 10px;
-`;
-
-const Footer = styled.h2`
-  font-size: calc(8px + 0.4vw);
-  background-color: #282c34;
   margin: 0;
   padding: 10px;
 `;
@@ -166,7 +160,7 @@ const names = {
   wolfson: 'Wolfson College',
 };
 
-const numQuestions = 10;
+const numQuestions = 20;
 
 const deal = (arr, selected, n) => {
   const forbidden = [selected];
@@ -268,8 +262,8 @@ class App extends Component {
           <div>
             <ul>
               <PoseGroup preEnterPose="preEnter">
-                {items.map(id => (
-                  <Item key={id}>
+                {items.map((id, i) => (
+                  <Item key={Math.floor(Math.random() * 1000000)}>
                     <PosedBlade club={id} className="blade" />
                   </Item>
                 ))}
@@ -279,7 +273,7 @@ class App extends Component {
               style={{
                 padding: '0px 28px',
                 margin: '4px 0px 12px 0px',
-                fontSize: 'calc(14px + 1.5vw)',
+                fontSize: 'calc(10px + 2vmin)',
               }}
             >
               Do you think you can identify all these rowing club blades? Take
@@ -302,8 +296,8 @@ class App extends Component {
             </PoseGroup>
             <ul>
               <PoseGroup preEnterPose="preEnter">
-                {items.map(id => (
-                  <Item key={id} onClick={() => this.handleClick(id)}>
+                {items.map((id, i) => (
+                  <Item key={i} onClick={() => this.handleClick(id)}>
                     <PosedBlade club={id} className="blade" />
                   </Item>
                 ))}
@@ -321,6 +315,7 @@ class App extends Component {
             <p>
               Your score: {this.state.correct}/{numQuestions}
             </p>
+            <Rating correct={this.state.correct} total={numQuestions} />
             <PosedButton onClick={() => this.handleRestart()}>
               Play again
             </PosedButton>
@@ -337,9 +332,6 @@ class App extends Component {
           <Title>Inspector Oars</Title>
         </header>
         <main>{content}</main>
-        <footer>
-          <Footer>© 2018 John Walley</Footer>
-        </footer>
       </div>
     );
   }
