@@ -203,6 +203,11 @@ class App extends Component {
     clearInterval(this.intervalId);
     const questions = shuffle(items).slice(0, numQuestions);
 
+    ReactGA.event({
+      category: 'App',
+      action: 'Start',
+    });
+
     this.setState({
       stage: 0,
       questions: questions,
@@ -218,6 +223,11 @@ class App extends Component {
         items: shuffle(items).slice(0, 4),
       });
     }, 2000);
+
+    ReactGA.event({
+      category: 'App',
+      action: 'Restart',
+    });
 
     this.setState({
       stage: -1,
