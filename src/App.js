@@ -7,10 +7,16 @@ import { Blade } from 'react-rowing-blades';
 import Question from './Question';
 import Result from './Result';
 import Rating from './Rating';
-import './App.css';
 
 ReactGA.initialize('UA-78521065-3');
 ReactGA.pageview(window.location.pathname + window.location.search);
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  height: 100%;
+`;
 
 const Button = styled.button`
   font-size: calc(14px + 1.5vmin);
@@ -20,6 +26,33 @@ const Button = styled.button`
   border-color: #28a745;
   color: white;
   cursor: pointer;
+`;
+
+const Intro = styled.p`
+  padding: 0px 28px;
+  margin: 4px 0px 12px 0px;
+  font-size: calc(10px + 2vmin);
+`;
+
+const Main = styled.main`
+  min-height: 200px;
+  flex: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+`;
+
+const BladeContainer = styled.ul`
+  list-style: none;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  flex-direction: row;
+  display: flex;
+  max-width: 90vw;
+  padding: 0px;
+  margin: 8px 0px 0px 0px;
 `;
 
 const PosedButton = posed(Button)({
@@ -58,8 +91,6 @@ const Counter = styled.p`
   margin: 0;
 `;
 
-const PosedBlade = posed(Blade)({});
-
 const Item = posed.li({
   pressable: true,
   init: { scale: 1 },
@@ -81,6 +112,24 @@ const Item = posed.li({
     opacity: 0,
   },
 });
+
+const StyledItem = styled(Item)`
+  display: block;
+  width: 18vw;
+  height: 100%;
+  margin: 10px 10px 0px 10px;
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+
+  @media (orientation: portrait) {
+    width: 38vw;
+    height: 100%;
+    margin: 10px;
+  }
+`;
+
+const StyledBlade = styled(Blade)`
+  cursor: pointer;
+`;
 
 const PosedResult = posed(Result)({
   enter: {
@@ -284,25 +333,19 @@ class App extends Component {
       case -1:
         content = (
           <div>
-            <ul>
+            <BladeContainer>
               <PoseGroup preEnterPose="preEnter">
                 {items.map((id, i) => (
-                  <Item key={Math.floor(Math.random() * 1000000)}>
-                    <PosedBlade club={id} className="blade" />
-                  </Item>
+                  <StyledItem key={Math.floor(Math.random() * 1000000)}>
+                    <StyledBlade club={id} />
+                  </StyledItem>
                 ))}
               </PoseGroup>
-            </ul>
-            <p
-              style={{
-                padding: '0px 28px',
-                margin: '4px 0px 12px 0px',
-                fontSize: 'calc(10px + 2vmin)',
-              }}
-            >
+            </BladeContainer>
+            <Intro>
               Do you think you can identify all these rowing club blades? Take
               the Inspector Oars quiz to find out!
-            </p>
+            </Intro>
             <PosedButton onClick={() => this.handleStart()}>Start</PosedButton>
           </div>
         );
@@ -318,15 +361,15 @@ class App extends Component {
                 <PosedResult key="result" className="result" result={result} />
               )}
             </PoseGroup>
-            <ul>
+            <BladeContainer>
               <PoseGroup preEnterPose="preEnter">
                 {items.map((id, i) => (
-                  <Item key={i} onClick={() => this.handleClick(id)}>
-                    <PosedBlade club={id} className="blade" />
-                  </Item>
+                  <StyledItem key={i} onClick={() => this.handleClick(id)}>
+                    <StyledBlade club={id} />
+                  </StyledItem>
                 ))}
               </PoseGroup>
-            </ul>
+            </BladeContainer>
             <Counter>
               {this.state.counter + 1} / {numQuestions}
             </Counter>
@@ -351,12 +394,12 @@ class App extends Component {
     }
 
     return (
-      <div className="App">
+      <Container>
         <header>
           <Title>Inspector Oars</Title>
         </header>
-        <main>{content}</main>
-      </div>
+        <Main>{content}</Main>
+      </Container>
     );
   }
 }
