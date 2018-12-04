@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ReactGA from 'react-ga';
 import posed, { PoseGroup } from 'react-pose';
 import styled from 'styled-components';
 import shuffle from './shuffle';
@@ -7,6 +8,9 @@ import Question from './Question';
 import Result from './Result';
 import Rating from './Rating';
 import './App.css';
+
+ReactGA.initialize('UA-78521065-3');
+ReactGA.pageview(window.location.pathname + window.location.search);
 
 const Button = styled.button`
   font-size: calc(14px + 1.5vmin);
@@ -226,13 +230,23 @@ class App extends Component {
 
   handleClick(club) {
     let correct = this.state.correct;
+    let result = null;
 
     if (club === this.state.questions[this.state.counter]) {
       correct += 1;
-      this.setState({ result: 'correct' });
+      result = 'correct';
     } else {
-      this.setState({ result: 'wrong' });
+      result = 'wrong';
     }
+
+    this.setState({ result: result });
+
+    ReactGA.event({
+      category: 'Question',
+      action: 'Submit answer',
+      label: this.state.questions[this.state.counter],
+      value: result === 'correct' ? 1 : 0,
+    });
 
     const selectedClubs = shuffle(
       deal(items, this.state.questions[this.state.counter + 1], 4)
