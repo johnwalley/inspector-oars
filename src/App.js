@@ -272,7 +272,7 @@ function App() {
       break;
     case 0:
       content = (
-        <div>
+        <React.Fragment>
           <Question content={names[questions[counter]]} />
           <PoseGroup>
             {result && (
@@ -283,7 +283,7 @@ function App() {
           <Counter>
             {counter + 1} / {numQuestions}
           </Counter>
-        </div>
+        </React.Fragment>
       );
       break;
     case 1:
