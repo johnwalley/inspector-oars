@@ -3,10 +3,12 @@ import ReactGA from 'react-ga';
 import posed, { PoseGroup } from 'react-pose';
 import styled from 'styled-components';
 import shuffle from './shuffle';
-import { Blade } from 'react-rowing-blades';
 import Question from './Question';
 import Result from './Result';
 import Rating from './Rating';
+import BladesContainer from './BladesContainer';
+
+const numQuestions = 20;
 
 ReactGA.initialize('UA-78521065-3');
 ReactGA.pageview(window.location.pathname + window.location.search);
@@ -43,18 +45,6 @@ const Main = styled.main`
   align-items: center;
 `;
 
-const BladeContainer = styled.ul`
-  list-style: none;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  flex-direction: row;
-  display: flex;
-  max-width: 90vw;
-  padding: 0px;
-  margin: 8px 0px 0px 0px;
-`;
-
 const PosedButton = posed(Button)({
   hoverable: true,
   pressable: true,
@@ -89,46 +79,6 @@ const Counter = styled.p`
   font-size: calc(20px + 1.5vw);
   font-weight: bold;
   margin: 0;
-`;
-
-const Item = posed.li({
-  pressable: true,
-  init: { scale: 1 },
-  press: { scale: 1.2 },
-  preEnter: {
-    y: 40,
-    opacity: 0,
-  },
-  enter: {
-    y: 0,
-    opacity: 1,
-    transition: {
-      y: { type: 'spring', stiffness: 1000, damping: 15 },
-      default: { duration: 100 },
-    },
-  },
-  exit: {
-    y: -40,
-    opacity: 0,
-  },
-});
-
-const StyledItem = styled(Item)`
-  display: block;
-  width: 18vw;
-  height: 100%;
-  margin: 10px 10px 0px 10px;
-  -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
-
-  @media (orientation: portrait) {
-    width: 38vw;
-    height: 100%;
-    margin: 10px;
-  }
-`;
-
-const StyledBlade = styled(Blade)`
-  cursor: pointer;
 `;
 
 const PosedResult = posed(Result)({
@@ -212,8 +162,6 @@ const names = {
   tithall: 'Trinity Hall',
   wolfson: 'Wolfson College',
 };
-
-const numQuestions = 20;
 
 const deal = (arr, selected, n) => {
   const forbidden = [selected];
@@ -313,15 +261,7 @@ function App() {
     case -1:
       content = (
         <div>
-          <BladeContainer>
-            <PoseGroup preEnterPose="preEnter">
-              {items.map(id => (
-                <StyledItem key={Math.floor(Math.random() * 1000000)}>
-                  <StyledBlade club={id} />
-                </StyledItem>
-              ))}
-            </PoseGroup>
-          </BladeContainer>
+          <BladesContainer items={items} animated />
           <Intro>
             Do you think you can identify all these rowing club blades? Take the
             Inspector Oars quiz to find out!
@@ -332,26 +272,18 @@ function App() {
       break;
     case 0:
       content = (
-        <React.Fragment>
+        <div>
           <Question content={names[questions[counter]]} />
           <PoseGroup>
             {result && (
               <PosedResult key="result" className="result" result={result} />
             )}
           </PoseGroup>
-          <BladeContainer>
-            <PoseGroup preEnterPose="preEnter">
-              {items.map((id, i) => (
-                <StyledItem key={i} onClick={() => handleClick(id)}>
-                  <StyledBlade club={id} />
-                </StyledItem>
-              ))}
-            </PoseGroup>
-          </BladeContainer>
+          <BladesContainer items={items} onClick={handleClick} />
           <Counter>
             {counter + 1} / {numQuestions}
           </Counter>
-        </React.Fragment>
+        </div>
       );
       break;
     case 1:
