@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactGA from 'react-ga';
 import posed, { PoseGroup } from 'react-pose';
 import styled from 'styled-components';
@@ -148,7 +148,7 @@ const PosedResult = posed(Result)({
   },
 });
 
-const items = [
+const clubs = [
   'caius',
   'christs',
   'churchill',
@@ -229,179 +229,154 @@ const deal = (arr, selected, n) => {
   return forbidden;
 };
 
-class App extends Component {
-  intervalId = 0;
+function App() {
+  const [intervalId, setIntervalId] = useState(0);
+  const [stage, setStage] = useState(-1);
+  const [counter, setCounter] = useState(0);
+  const [correct, setCorrect] = useState(0);
+  const [result, setResult] = useState(null);
+  const [questions, setQuestions] = useState(null);
+  const [items, setItems] = useState(shuffle(clubs).slice(0, 4));
 
-  state = {
-    stage: -1,
-    counter: 0,
-    correct: 0,
-    result: null,
-    items: shuffle(items).slice(0, 4),
-  };
+  useEffect(
+    () => {
+      if (stage === -1) {
+        setIntervalId(
+          setInterval(() => {
+            setItems(shuffle(clubs).slice(0, 4));
+          }, 2000)
+        );
+      }
+    },
+    [stage]
+  );
 
-  componentDidMount() {
-    this.intervalId = setInterval(() => {
-      this.setState({
-        items: shuffle(items).slice(0, 4),
-      });
-    }, 2000);
-  }
-
-  handleStart() {
-    clearInterval(this.intervalId);
-    const questions = shuffle(items).slice(0, numQuestions);
+  function handleStart() {
+    clearInterval(intervalId);
+    const questions = shuffle(clubs).slice(0, numQuestions);
 
     ReactGA.event({
       category: 'App',
       action: 'Start',
     });
 
-    this.setState({
-      stage: 0,
-      questions: questions,
-      items: shuffle(deal(items, questions[0], 4)),
-    });
+    setStage(0);
+    setQuestions(questions);
+    setItems(shuffle(deal(clubs, questions[0], 4)));
   }
 
-  handleRestart() {
-    const questions = shuffle(items).slice(0, numQuestions);
-
-    this.intervalId = setInterval(() => {
-      this.setState({
-        items: shuffle(items).slice(0, 4),
-      });
-    }, 2000);
+  function handleRestart() {
+    const questions = shuffle(clubs).slice(0, numQuestions);
 
     ReactGA.event({
       category: 'App',
       action: 'Restart',
     });
 
-    this.setState({
-      stage: -1,
-      counter: 0,
-      correct: 0,
-      questions: questions,
-      items: shuffle(items).slice(0, 4),
-    });
+    setStage(-1);
+    setItems(shuffle(clubs).slice(0, 4));
+    setCorrect(0);
+    setCounter(0);
+    setQuestions(questions);
   }
 
-  handleClick(club) {
-    let correct = this.state.correct;
+  function handleClick(club) {
     let result = null;
 
-    if (club === this.state.questions[this.state.counter]) {
-      correct += 1;
+    if (club === questions[counter]) {
+      setCorrect(correct + 1);
       result = 'correct';
     } else {
       result = 'wrong';
     }
 
-    this.setState({ result: result });
+    setResult(result);
 
     ReactGA.event({
       category: 'Question',
       action: 'Submit answer',
-      label: this.state.questions[this.state.counter],
+      label: questions[counter],
       value: result === 'correct' ? 1 : 0,
     });
 
-    const selectedClubs = shuffle(
-      deal(items, this.state.questions[this.state.counter + 1], 4)
-    );
-
-    setTimeout(
-      () =>
-        this.setState({
-          stage: this.state.counter + 1 === numQuestions ? 1 : 0,
-          items: selectedClubs,
-          correct: correct,
-          counter: this.state.counter + 1,
-          result: null,
-        }),
-      1000
-    );
+    setTimeout(() => {
+      setStage(counter + 1 === numQuestions ? 1 : 0);
+      setItems(shuffle(deal(items, questions[counter + 1], 4)));
+      setCounter(counter + 1);
+      setResult(null);
+    }, 1000);
   }
 
-  render() {
-    const { stage, items, result } = this.state;
+  let content = null;
 
-    let content = null;
-
-    switch (stage) {
-      case -1:
-        content = (
-          <div>
-            <BladeContainer>
-              <PoseGroup preEnterPose="preEnter">
-                {items.map((id, i) => (
-                  <StyledItem key={Math.floor(Math.random() * 1000000)}>
-                    <StyledBlade club={id} />
-                  </StyledItem>
-                ))}
-              </PoseGroup>
-            </BladeContainer>
-            <Intro>
-              Do you think you can identify all these rowing club blades? Take
-              the Inspector Oars quiz to find out!
-            </Intro>
-            <PosedButton onClick={() => this.handleStart()}>Start</PosedButton>
-          </div>
-        );
-        break;
-      case 0:
-        content = (
-          <React.Fragment>
-            <Question
-              content={names[this.state.questions[this.state.counter]]}
-            />
-            <PoseGroup>
-              {result && (
-                <PosedResult key="result" className="result" result={result} />
-              )}
+  switch (stage) {
+    case -1:
+      content = (
+        <div>
+          <BladeContainer>
+            <PoseGroup preEnterPose="preEnter">
+              {items.map(id => (
+                <StyledItem key={Math.floor(Math.random() * 1000000)}>
+                  <StyledBlade club={id} />
+                </StyledItem>
+              ))}
             </PoseGroup>
-            <BladeContainer>
-              <PoseGroup preEnterPose="preEnter">
-                {items.map((id, i) => (
-                  <StyledItem key={i} onClick={() => this.handleClick(id)}>
-                    <StyledBlade club={id} />
-                  </StyledItem>
-                ))}
-              </PoseGroup>
-            </BladeContainer>
-            <Counter>
-              {this.state.counter + 1} / {numQuestions}
-            </Counter>
-          </React.Fragment>
-        );
-        break;
-      case 1:
-        content = (
-          <div>
-            <p>
-              Your score: {this.state.correct}/{numQuestions}
-            </p>
-            <Rating correct={this.state.correct} total={numQuestions} />
-            <PosedButton onClick={() => this.handleRestart()}>
-              Play again
-            </PosedButton>
-          </div>
-        );
-        break;
-      default:
-        content = null;
-    }
-
-    return (
-      <Container>
-        <header>
-          <Title>Inspector Oars</Title>
-        </header>
-        <Main>{content}</Main>
-      </Container>
-    );
+          </BladeContainer>
+          <Intro>
+            Do you think you can identify all these rowing club blades? Take the
+            Inspector Oars quiz to find out!
+          </Intro>
+          <PosedButton onClick={handleStart}>Start</PosedButton>
+        </div>
+      );
+      break;
+    case 0:
+      content = (
+        <React.Fragment>
+          <Question content={names[questions[counter]]} />
+          <PoseGroup>
+            {result && (
+              <PosedResult key="result" className="result" result={result} />
+            )}
+          </PoseGroup>
+          <BladeContainer>
+            <PoseGroup preEnterPose="preEnter">
+              {items.map((id, i) => (
+                <StyledItem key={i} onClick={() => handleClick(id)}>
+                  <StyledBlade club={id} />
+                </StyledItem>
+              ))}
+            </PoseGroup>
+          </BladeContainer>
+          <Counter>
+            {counter + 1} / {numQuestions}
+          </Counter>
+        </React.Fragment>
+      );
+      break;
+    case 1:
+      content = (
+        <div>
+          <p>
+            Your score: {correct}/{numQuestions}
+          </p>
+          <Rating correct={correct} total={numQuestions} />
+          <PosedButton onClick={handleRestart}>Play again</PosedButton>
+        </div>
+      );
+      break;
+    default:
+      content = null;
   }
+
+  return (
+    <Container>
+      <header>
+        <Title>Inspector Oars</Title>
+      </header>
+      <Main>{content}</Main>
+    </Container>
+  );
 }
 
 export default App;
