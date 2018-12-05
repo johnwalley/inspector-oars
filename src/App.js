@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ReactGA from 'react-ga';
 import posed, { PoseGroup } from 'react-pose';
+import { FacebookShareButton, FacebookIcon } from 'react-share';
 import styled from 'styled-components';
 import shuffle from './shuffle';
 import Question from './Question';
@@ -12,6 +13,10 @@ const numQuestions = 20;
 
 ReactGA.initialize('UA-78521065-3');
 ReactGA.pageview(window.location.pathname + window.location.search);
+
+const StyledFacebookShareButton = styled(FacebookShareButton)`
+  cursor: pointer;
+`;
 
 const Container = styled.div`
   display: flex;
@@ -288,13 +293,19 @@ function App() {
       break;
     case 1:
       content = (
-        <div>
+        <React.Fragment>
           <p>
             Your score: {correct}/{numQuestions}
           </p>
           <Rating correct={correct} total={numQuestions} />
           <PosedButton onClick={handleRestart}>Play again</PosedButton>
-        </div>
+          <StyledFacebookShareButton
+            url="https://www.inspectoroars.co.uk"
+            quote={`I correctly identified ${correct} out of ${numQuestions} Cambridge college rowing blades`}
+          >
+            <FacebookIcon size={64} />
+          </StyledFacebookShareButton>
+        </React.Fragment>
       );
       break;
     default:
