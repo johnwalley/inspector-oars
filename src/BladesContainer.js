@@ -61,7 +61,7 @@ const BladesContainer = ({ items, onClick, animated = false }) => (
       {items.map((id, i) => (
         <StyledItem
           key={animated ? Math.floor(Math.random() * 1000000) : i}
-          onClick={id => onClick(id)}
+          onClick={() => onClick(id)}
         >
           <StyledBlade club={id} />
         </StyledItem>
