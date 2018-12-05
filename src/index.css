@@ -8,6 +8,7 @@ body {
   background-image: linear-gradient(hsla(240, 50%, 80%, .5), hsla(240, 50%, 80%, 0));
   animation: bg-move 60s infinite;
   will-change: background-color;
+  overflow: hidden;
 }
 
 #root {
