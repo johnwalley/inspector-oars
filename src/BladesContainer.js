@@ -17,6 +17,9 @@ const BladeContainer = styled.ul`
 
 const Item = posed.li({
   pressable: true,
+  normal: { filter: 'grayscale(0%) blur(0px)', scale: 1 },
+  correct: { filter: 'grayscale(0%) blur(0px)', scale: 1.6 },
+  wrong: { filter: 'grayscale(100%) blur(10px)', scale: 1 },
   init: { scale: 1 },
   press: { scale: 1.2 },
   preEnter: {
@@ -55,13 +58,21 @@ const StyledBlade = styled(Blade)`
   cursor: pointer;
 `;
 
-const BladesContainer = ({ items, onClick, animated = false }) => (
+const BladesContainer = ({
+  items,
+  correct = null,
+  onClick,
+  animated = false,
+}) => (
   <BladeContainer>
     <PoseGroup preEnterPose="preEnter">
       {items.map((id, i) => (
         <StyledItem
           key={animated ? Math.floor(Math.random() * 1000000) : i}
           onClick={() => onClick(id)}
+          pose={
+            correct === null ? 'normal' : correct === id ? 'correct' : 'wrong'
+          }
         >
           <StyledBlade club={id} />
         </StyledItem>

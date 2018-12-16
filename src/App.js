@@ -284,7 +284,11 @@ function App() {
               <PosedResult key="result" className="result" result={result} />
             )}
           </PoseGroup>
-          <BladesContainer items={items} onClick={handleClick} />
+          <BladesContainer
+            items={items}
+            correct={result && questions[counter]}
+            onClick={handleClick}
+          />
           <Counter>
             {counter + 1} / {numQuestions}
           </Counter>
