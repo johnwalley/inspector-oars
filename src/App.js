@@ -152,6 +152,7 @@ function App() {
     ReactGA.event({
       category: 'App',
       action: 'Start',
+      label: category,
     });
 
     setStage(0);
