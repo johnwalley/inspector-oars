@@ -3,6 +3,7 @@ import ReactGA from 'react-ga';
 import posed, { PoseGroup } from 'react-pose';
 import { FacebookShareButton, FacebookIcon } from 'react-share';
 import styled from 'styled-components';
+import { clubs, shortNames } from 'react-rowing-blades';
 import shuffle from './shuffle';
 import Question from './Question';
 import Result from './Result';
@@ -103,71 +104,6 @@ const PosedResult = posed(Result)({
   },
 });
 
-const clubs = [
-  'caius',
-  'christs',
-  'churchill',
-  'clare',
-  'clarehall',
-  'corpus',
-  'darwin',
-  'downing',
-  'emmanuel',
-  'fat',
-  'girton',
-  'homerton',
-  'hh',
-  'jesus',
-  'kings',
-  'lmbc',
-  'magdalene',
-  'murray',
-  'newnham',
-  'pembroke',
-  'peterhouse',
-  'queens',
-  'robinson',
-  'selwyn',
-  'sidney',
-  'catz',
-  'edmunds',
-  'tithall',
-  'wolfson',
-];
-
-const names = {
-  caius: 'Caius',
-  christs: "Christ's College",
-  churchill: 'Churchill College',
-  clare: 'Clare',
-  clarehall: 'Clare Hall',
-  corpus: 'Corpus Christi College',
-  darwin: 'Darwin College',
-  downing: 'Downing College',
-  emmanuel: 'Emmanuel',
-  fat: 'First and Third Trinity',
-  fitz: 'Fitzwilliam College',
-  girton: 'Girton College',
-  homerton: 'Homerton College',
-  hh: 'Hughes Hall',
-  jesus: 'Jesus College',
-  kings: "King's College",
-  lmbc: 'Lady Margaret',
-  magdalene: 'Magdalene',
-  murray: 'Murray Edwards College',
-  newnham: 'Newnham College',
-  pembroke: 'Pembroke College',
-  peterhouse: 'Peterhouse',
-  queens: "Queens' College",
-  robinson: 'Robinson College',
-  selwyn: 'Selwyn College',
-  sidney: 'Sidney Sussex',
-  catz: "St. Catharine's College",
-  edmunds: "St. Edmund's College",
-  tithall: 'Trinity Hall',
-  wolfson: 'Wolfson College',
-};
-
 const deal = (arr, selected, n) => {
   const forbidden = [selected];
 
@@ -189,14 +125,14 @@ function App() {
   const [correct, setCorrect] = useState(0);
   const [result, setResult] = useState(null);
   const [questions, setQuestions] = useState(null);
-  const [items, setItems] = useState(shuffle(clubs).slice(0, 4));
+  const [items, setItems] = useState(shuffle(clubs.cambridge).slice(0, 4));
 
   useEffect(
     () => {
       if (stage === -1) {
         setIntervalId(
           setInterval(() => {
-            setItems(shuffle(clubs).slice(0, 4));
+            setItems(shuffle(clubs.cambridge).slice(0, 4));
           }, 2000)
         );
       }
@@ -206,7 +142,7 @@ function App() {
 
   function handleStart() {
     clearInterval(intervalId);
-    const questions = shuffle(clubs).slice(0, numQuestions);
+    const questions = shuffle(clubs.cambridge).slice(0, numQuestions);
 
     ReactGA.event({
       category: 'App',
@@ -215,11 +151,11 @@ function App() {
 
     setStage(0);
     setQuestions(questions);
-    setItems(shuffle(deal(clubs, questions[0], 4)));
+    setItems(shuffle(deal(clubs.cambridge, questions[0], 4)));
   }
 
   function handleRestart() {
-    const questions = shuffle(clubs).slice(0, numQuestions);
+    const questions = shuffle(clubs.cambridge).slice(0, numQuestions);
 
     ReactGA.event({
       category: 'App',
@@ -227,7 +163,7 @@ function App() {
     });
 
     setStage(-1);
-    setItems(shuffle(clubs).slice(0, 4));
+    setItems(shuffle(clubs.cambridge).slice(0, 4));
     setCorrect(0);
     setCounter(0);
     setQuestions(questions);
@@ -278,7 +214,7 @@ function App() {
     case 0:
       content = (
         <React.Fragment>
-          <Question content={names[questions[counter]]} />
+          <Question content={shortNames.cambridge[questions[counter]]} />
           <PoseGroup>
             {result && (
               <PosedResult key="result" className="result" result={result} />
