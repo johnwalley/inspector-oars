@@ -18,3 +18,4 @@ const message = (correct, total) => {
 export default ({ correct, total }) => (
   <Rating>{message(correct, total)}</Rating>
 );
+

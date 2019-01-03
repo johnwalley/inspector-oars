@@ -27,11 +27,12 @@ const Container = styled.div`
 `;
 
 const Button = styled.button`
-  font-size: calc(14px + 1.5vmin);
+  font-size: calc(12px + 1.5vmin);
   border-radius: 0.25rem;
-  padding: 10px 18px;
-  background-color: #28a745;
-  border-color: #28a745;
+  padding: 8px 18px;
+  margin: 8px;
+  background-color: ${props => props.color};
+  border-color: #000000;
   color: white;
   cursor: pointer;
 `;
@@ -82,9 +83,10 @@ const Title = styled.h1`
 `;
 
 const Counter = styled.p`
-  font-size: calc(20px + 1.5vw);
+  font-size: ${props => `calc(${props.small ? '12px' : '20px'} + 1.5vw)`};
   font-weight: bold;
   margin: 0;
+  margin-bottom: 10px;
 `;
 
 const PosedResult = posed(Result)({
@@ -125,14 +127,17 @@ function App() {
   const [correct, setCorrect] = useState(0);
   const [result, setResult] = useState(null);
   const [questions, setQuestions] = useState(null);
-  const [items, setItems] = useState(shuffle(clubs.cambridge).slice(0, 4));
+  const [category, setCategory] = useState(null);
+  const [items, setItems] = useState(
+    shuffle(clubs.cambridge.concat(clubs.oxford)).slice(0, 4)
+  );
 
   useEffect(
     () => {
       if (stage === -1) {
         setIntervalId(
           setInterval(() => {
-            setItems(shuffle(clubs.cambridge).slice(0, 4));
+            setItems(shuffle(clubs.cambridge.concat(clubs.oxford)).slice(0, 4));
           }, 2000)
         );
       }
@@ -140,9 +145,9 @@ function App() {
     [stage]
   );
 
-  function handleStart() {
+  function handleStart(category) {
     clearInterval(intervalId);
-    const questions = shuffle(clubs.cambridge).slice(0, numQuestions);
+    const questions = shuffle(clubs[category]).slice(0, numQuestions);
 
     ReactGA.event({
       category: 'App',
@@ -151,22 +156,20 @@ function App() {
 
     setStage(0);
     setQuestions(questions);
-    setItems(shuffle(deal(clubs.cambridge, questions[0], 4)));
+    setItems(shuffle(deal(clubs[category], questions[0], 4)));
+    setCategory(category);
   }
 
   function handleRestart() {
-    const questions = shuffle(clubs.cambridge).slice(0, numQuestions);
-
     ReactGA.event({
       category: 'App',
       action: 'Restart',
     });
 
     setStage(-1);
-    setItems(shuffle(clubs.cambridge).slice(0, 4));
+    setItems(shuffle(clubs.cambridge.concat(clubs.oxford)).slice(0, 4));
     setCorrect(0);
     setCounter(0);
-    setQuestions(questions);
   }
 
   function handleClick(club) {
@@ -190,7 +193,7 @@ function App() {
 
     setTimeout(() => {
       setStage(counter + 1 === numQuestions ? 1 : 0);
-      setItems(shuffle(deal(items, questions[counter + 1], 4)));
+      setItems(shuffle(deal(clubs[category], questions[counter + 1], 4)));
       setCounter(counter + 1);
       setResult(null);
     }, 1000);
@@ -207,14 +210,19 @@ function App() {
             Do you think you can identify all these rowing club blades? Take the
             Inspector Oars quiz to find out!
           </Intro>
-          <PosedButton onClick={handleStart}>Start</PosedButton>
+          <PosedButton onClick={() => handleStart('cambridge')} color="#a3C1ad">
+            Start Cambridge Edition
+          </PosedButton>
+          <PosedButton onClick={() => handleStart('oxford')} color="#002147">
+            Start Oxford Edition
+          </PosedButton>
         </div>
       );
       break;
     case 0:
       content = (
         <React.Fragment>
-          <Question content={shortNames.cambridge[questions[counter]]} />
+          <Question content={shortNames[category][questions[counter]]} />
           <PoseGroup>
             {result && (
               <PosedResult key="result" className="result" result={result} />
@@ -225,8 +233,9 @@ function App() {
             correct={result && questions[counter]}
             onClick={handleClick}
           />
-          <Counter>
-            {counter + 1} / {numQuestions}
+          <Counter>Score: {correct}</Counter>
+          <Counter small>
+            Question: {counter + 1} / {numQuestions}
           </Counter>
         </React.Fragment>
       );
@@ -238,10 +247,14 @@ function App() {
             Your score: {correct}/{numQuestions}
           </p>
           <Rating correct={correct} total={numQuestions} />
-          <PosedButton onClick={handleRestart}>Play again</PosedButton>
+          <PosedButton onClick={handleRestart} color="#28a745">
+            Play again
+          </PosedButton>
           <StyledFacebookShareButton
             url="https://www.inspectoroars.co.uk"
-            quote={`I correctly identified ${correct} out of ${numQuestions} Cambridge college rowing blades`}
+            quote={`I correctly identified ${correct} out of ${numQuestions} ${category
+              .charAt(0)
+              .toUpperCase() + category.slice(1)} college rowing blades`}
           >
             <FacebookIcon size={64} />
           </StyledFacebookShareButton>

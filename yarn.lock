@@ -6935,7 +6935,7 @@ react-pose@^4.0.2:
     popmotion-pose "^3.4.0"
     tslib "^1.9.1"
 
-react-rowing-blades@^1.0.1:
+react-rowing-blades@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/react-rowing-blades/-/react-rowing-blades-1.1.0.tgz#d1671a172274b314ff638e993836111ac0a2591c"
   integrity sha512-udUKQgHj8+8+pAH0exJRtut0I2hm3baGDMg7gFG+4ZTfGp5oKl+4ZMnseVpGkPhdcHwtcuI4MF5MR52OcVcs9A==
