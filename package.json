@@ -5,7 +5,7 @@
   "dependencies": {
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
-    "react-ga": "^2.6.0",
+    "react-ga": "^2.7.0",
     "react-icons": "^3.8.0",
     "react-pose": "^4.0.8",
     "react-rowing-blades": "^1.5.2",
