@@ -1,18 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import ReactGA from 'react-ga';
-import posed, { PoseGroup } from 'react-pose';
-import { FacebookShareButton, FacebookIcon } from 'react-share';
-import styled from 'styled-components';
-import { clubs, shortNames } from 'react-rowing-blades';
-import shuffle from './shuffle';
-import Question from './Question';
-import Result from './Result';
-import Rating from './Rating';
-import BladesContainer from './BladesContainer';
+import React, { useState, useEffect } from "react";
+import ReactGA from "react-ga";
+import posed, { PoseGroup } from "react-pose";
+import { FacebookShareButton, FacebookIcon } from "react-share";
+import styled from "styled-components";
+import { clubs, shortNames } from "react-rowing-blades";
+import shuffle from "./shuffle";
+import Question from "./Question";
+import Result from "./Result";
+import Rating from "./Rating";
+import BladesContainer from "./BladesContainer";
 
 const numQuestions = 20;
 
-ReactGA.initialize('UA-78521065-3');
+ReactGA.initialize("UA-78521065-3");
 ReactGA.pageview(window.location.pathname + window.location.search);
 
 const StyledFacebookShareButton = styled(FacebookShareButton)`
@@ -31,7 +31,7 @@ const Button = styled.button`
   border-radius: 0.25rem;
   padding: 8px 18px;
   margin: 8px;
-  background-color: ${props => props.color};
+  background-color: ${(props) => props.color};
   border-color: #000000;
   color: white;
   cursor: pointer;
@@ -57,20 +57,20 @@ const PosedButton = posed(Button)({
   pressable: true,
   init: {
     scale: 1,
-    boxShadow: '0px 0px 0px rgba(0,0,0,0)',
+    boxShadow: "0px 0px 0px rgba(0,0,0,0)",
   },
   hover: {
     scale: 1.1,
-    boxShadow: '0px 5px 10px rgba(0,0,0,0.2)',
+    boxShadow: "0px 5px 10px rgba(0,0,0,0.2)",
   },
   press: {
     scale: 0.9,
-    boxShadow: '0px 2px 5px rgba(0,0,0,0.1)',
+    boxShadow: "0px 2px 5px rgba(0,0,0,0.1)",
   },
 });
 
 const Title = styled.h1`
-  font-family: 'Pacifico', cursive;
+  font-family: "Pacifico", cursive;
   background-color: #282c34;
   display: flex;
   flex-direction: column;
@@ -83,7 +83,7 @@ const Title = styled.h1`
 `;
 
 const Counter = styled.p`
-  font-size: ${props => `calc(${props.small ? '12px' : '20px'} + 1.5vw)`};
+  font-size: ${(props) => `calc(${props.small ? "12px" : "20px"} + 1.5vw)`};
   font-weight: bold;
   margin: 0;
   margin-bottom: 10px;
@@ -95,7 +95,7 @@ const PosedResult = posed(Result)({
     opacity: 1,
     delay: 0,
     transition: {
-      y: { type: 'spring', stiffness: 1000, damping: 15 },
+      y: { type: "spring", stiffness: 1000, damping: 15 },
       default: { duration: 300 },
     },
   },
@@ -129,29 +129,28 @@ function App() {
   const [questions, setQuestions] = useState(null);
   const [category, setCategory] = useState(null);
   const [items, setItems] = useState(
-    shuffle(clubs.cambridge.concat(clubs.oxford)).slice(0, 4)
+    shuffle(clubs.cambridge.concat(clubs.oxford, clubs.uk)).slice(0, 4)
   );
 
-  useEffect(
-    () => {
-      if (stage === -1) {
-        setIntervalId(
-          setInterval(() => {
-            setItems(shuffle(clubs.cambridge.concat(clubs.oxford)).slice(0, 4));
-          }, 2000)
-        );
-      }
-    },
-    [stage]
-  );
+  useEffect(() => {
+    if (stage === -1) {
+      setIntervalId(
+        setInterval(() => {
+          setItems(
+            shuffle(clubs.cambridge.concat(clubs.oxford, clubs.uk)).slice(0, 4)
+          );
+        }, 2000)
+      );
+    }
+  }, [stage]);
 
   function handleStart(category) {
     clearInterval(intervalId);
     const questions = shuffle(clubs[category]).slice(0, numQuestions);
 
     ReactGA.event({
-      category: 'App',
-      action: 'Start',
+      category: "App",
+      action: "Start",
       label: category,
     });
 
@@ -163,8 +162,8 @@ function App() {
 
   function handleRestart() {
     ReactGA.event({
-      category: 'App',
-      action: 'Restart',
+      category: "App",
+      action: "Restart",
     });
 
     setStage(-1);
@@ -178,18 +177,18 @@ function App() {
 
     if (club === questions[counter]) {
       setCorrect(correct + 1);
-      result = 'correct';
+      result = "correct";
     } else {
-      result = 'wrong';
+      result = "wrong";
     }
 
     setResult(result);
 
     ReactGA.event({
-      category: 'Question',
-      action: 'Submit answer',
+      category: "Question",
+      action: "Submit answer",
       label: questions[counter],
-      value: result === 'correct' ? 1 : 0,
+      value: result === "correct" ? 1 : 0,
     });
 
     setTimeout(() => {
@@ -211,11 +210,14 @@ function App() {
             Do you think you can identify all these rowing club blades? Take the
             Inspector Oars quiz to find out!
           </Intro>
-          <PosedButton onClick={() => handleStart('cambridge')} color="#a3C1ad">
+          <PosedButton onClick={() => handleStart("cambridge")} color="#a3C1ad">
             Start Cambridge Edition
           </PosedButton>
-          <PosedButton onClick={() => handleStart('oxford')} color="#002147">
+          <PosedButton onClick={() => handleStart("oxford")} color="#002147">
             Start Oxford Edition
+          </PosedButton>
+          <PosedButton onClick={() => handleStart("uk")} color="#001f7e">
+            Start UK Edition
           </PosedButton>
         </div>
       );
@@ -253,9 +255,9 @@ function App() {
           </PosedButton>
           <StyledFacebookShareButton
             url="https://www.inspectoroars.co.uk"
-            quote={`I correctly identified ${correct} out of ${numQuestions} ${category
-              .charAt(0)
-              .toUpperCase() + category.slice(1)} college rowing blades`}
+            quote={`I correctly identified ${correct} out of ${numQuestions} ${
+              category.charAt(0).toUpperCase() + category.slice(1)
+            } college rowing blades`}
           >
             <FacebookIcon size={64} />
           </StyledFacebookShareButton>
