@@ -45,7 +45,7 @@ const Intro = styled.p`
 
 const Main = styled.main`
   min-height: 200px;
-  flex: auto;
+  height: 70%;
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
