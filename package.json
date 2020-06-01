@@ -10,7 +10,7 @@
     "react-pose": "^4.0.10",
     "react-rowing-blades": "^1.6.1",
     "react-scripts": "3.4.1",
-    "react-share": "^3.0.1",
+    "react-share": "^4.1.0",
     "styled-components": "^5.1.1"
   },
   "scripts": {
