@@ -3,15 +3,15 @@
   "version": "1.0.0",
   "private": false,
   "dependencies": {
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0",
     "react-ga": "^2.7.0",
-    "react-icons": "^3.10.0",
+    "react-icons": "^3.11.0",
     "react-pose": "^4.0.10",
-    "react-rowing-blades": "^1.6.1",
-    "react-scripts": "^3.4.3",
-    "react-share": "^4.3.0",
-    "styled-components": "^5.1.1"
+    "react-rowing-blades": "^1.6.4",
+    "react-scripts": "^3.4.4",
+    "react-share": "^4.3.1",
+    "styled-components": "^5.2.1"
   },
   "scripts": {
     "start": "react-scripts start",
