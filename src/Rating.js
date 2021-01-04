@@ -1,21 +1,17 @@
-import React from 'react';
-import styled from 'styled-components';
-
-const Rating = styled.p``;
+import React from "react";
 
 const message = (correct, total) => {
   const percentage = (correct / total) * 100;
 
   if (percentage >= 100) {
-    return 'Perfect!';
+    return "Perfect!";
   } else if (percentage >= 80) {
-    return 'Close!';
+    return "Close!";
   } else {
-    return 'Time to get revising!';
+    return "Time to get revising!";
   }
 };
 
-export default ({ correct, total }) => (
-  <Rating>{message(correct, total)}</Rating>
-);
+const Rating = ({ correct, total }) => <p>{message(correct, total)}</p>;
 
+export default Rating;
