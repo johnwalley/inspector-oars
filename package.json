@@ -8,7 +8,7 @@
     "react-ga": "^2.7.0",
     "react-icons": "^3.11.0",
     "react-pose": "^4.0.10",
-    "react-rowing-blades": "^1.6.4",
+    "react-rowing-blades": "2.4.0",
     "react-scripts": "4.0.1",
     "react-share": "^4.4.1",
     "styled-components": "^5.3.9"

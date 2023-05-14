@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import posed, { PoseGroup } from "react-pose";
-import Blade from "react-rowing-blades";
+import { Blade } from "react-rowing-blades";
 
 const BladeContainer = styled.ul`
   flex: 1 1 auto;
